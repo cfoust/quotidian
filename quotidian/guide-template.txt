@@ -1,0 +1,5 @@
+Quotidian Module Guide
+======================
+
+To use one of these modules, create the folder specified by "Folder name:" in
+this folder and follow the module's instructions.
