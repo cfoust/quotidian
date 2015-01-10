@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import os, datetime, sys, traceback
+import drury
 
 
 class Collection:
@@ -38,6 +39,7 @@ class Collection:
 			moduleDict[module.info['shortname']] = module
 
 		self.modules = moduleDict
+		self.db = drury.Drury(folder_name + 'baked.db')
 
 	def hasData(self, module_name):
 		if not module_name in self.modules:
@@ -53,8 +55,15 @@ class Collection:
 			print traceback.format_exc()
 			return False
 
-	def get(self):
-		r = Range()
+	def bakeData(self, module_name):
+		if not module_name in self.modules:
+			raise Exception('No such module: %s' % module_name)
+
+		if not os.path.isdir(self.folder_name + module_name):
+			raise Exception('No data found for module %s' % module_name)
+
+		data = self.modules[module_name].parse(self.folder_name + module_name)
+		self.db.bakeData(module_name,data)
 
 	# Need to be internal classes, not used elsewhere
 	class Range:
