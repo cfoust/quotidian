@@ -3,7 +3,6 @@
 import os, datetime, sys, traceback
 import drury
 
-
 class Collection:
 
 	def __init__(self, folder_name, modules):
