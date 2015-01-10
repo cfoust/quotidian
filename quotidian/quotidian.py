@@ -76,6 +76,9 @@ class Collection:
 		data = self.modules[module_name].parse(self.folder_name + module_name)
 		self.db.bakeData(module_name,data)
 
+	def getModuleList(self):
+		return [module for module in self.modules]
+
 	def all(self):
 		return self.Range(self,datetime.datetime.min,datetime.datetime.max)
 
