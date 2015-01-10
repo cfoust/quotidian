@@ -41,7 +41,7 @@ class Collection:
 		self.modules = moduleDict
 		self.db = drury.Drury(folder_name + 'baked.db')
 
-	def hasData(self, module_name):
+	def hasRawData(self, module_name):
 		if not module_name in self.modules:
 			raise Exception('No such module: %s' % module_name)
 
@@ -55,6 +55,18 @@ class Collection:
 			print traceback.format_exc()
 			return False
 
+	def hasDBData(self,module_name):
+		if not module_name in self.modules:
+			raise Exception('No such module: %s' % module_name)
+
+		return self.db.hasData(module_name)
+
+	def lastBakeTime(self,module_name):
+		if not module_name in self.modules:
+			raise Exception('No such module: %s' % module_name)
+
+		return self.db.lastBaked(module_name)
+
 	def bakeData(self, module_name):
 		if not module_name in self.modules:
 			raise Exception('No such module: %s' % module_name)
@@ -65,24 +77,25 @@ class Collection:
 		data = self.modules[module_name].parse(self.folder_name + module_name)
 		self.db.bakeData(module_name,data)
 
+	def all(self):
+		return self.Range(self,datetime.datetime.min,datetime.datetime.max)
+
+	def between(self,start,finish):
+		# todo: sanity check these values more
+
+		if not end > start:
+			raise Exception('Invalid range, end is before start.')
+
+		return self.Range(self,start,finish)
+
 	# Need to be internal classes, not used elsewhere
 	class Range:
-		def __init__(self,collection):
+		def __init__(self,collection,start,finish):
 			self.collection = collection
-
-		def all(self):
-			self.start = datetime.datetime.min
-			self.end = datetime.datetime.max
-
-		def between(self,start,end):
-			# todo: sanity check these values some more
-
-			if not end > start:
-				raise Exception('Invalid range, end is before start.')
-
 			self.start = start
-			self.end = end
+			self.finish = finish
 
-	class Selection:
-		def __init__(self,forRange):
-			self.range = forRange
+		def forModule(self,moduleName):
+			return self.collection.db.retrieveData(self.start,
+												   self.finish,
+												   moduleName)

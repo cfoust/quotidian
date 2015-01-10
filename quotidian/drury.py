@@ -69,3 +69,16 @@ class Drury:
 			restoredData.append((point.timestamp,json.loads(point.data)))
 
 		return restoredData
+
+	def lastBaked(self,moduleName):
+		try:
+			info = BakeInfo.get(BakeInfo.moduleName == moduleName)
+			return info.lastBaked
+		except DoesNotExist:
+			return None
+
+	def hasData(self,moduleName):
+		result = self.retrieveData(datetime.datetime.min,datetime.datetime.max,moduleName)
+		if len(result) == 0:
+			return False
+		return True
