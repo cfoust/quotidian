@@ -1,13 +1,12 @@
 #!/usr/bin/env python
 
-import os
+import os, datetime, sys, traceback
 
 
 class Collection:
 
 	def __init__(self, folder_name, modules):
 		self.folder_name = folder_name
-		self.modules = modules
 
 		# Create folder if it doesn't exist
 		if not os.path.isdir(folder_name):
@@ -34,4 +33,47 @@ class Collection:
 				f.write(module.info['description'])
 				f.write('\n\n')
 
-		
+		moduleDict = {}
+		for module in modules:
+			moduleDict[module.info['shortname']] = module
+
+		self.modules = moduleDict
+
+	def hasData(self, module_name):
+		if not module_name in self.modules:
+			raise Exception('No such module: %s' % module_name)
+
+		if not os.path.isdir(self.folder_name + module_name):
+			return False
+
+		try:
+			return self.modules[module_name].check(self.folder_name + module_name)
+		except:
+			print 'There was an exception when checking for module %s:' % module_name
+			print traceback.format_exc()
+			return False
+
+	def get(self):
+		r = Range()
+
+	# Need to be internal classes, not used elsewhere
+	class Range:
+		def __init__(self,collection):
+			self.collection = collection
+
+		def all(self):
+			self.start = datetime.datetime.min
+			self.end = datetime.datetime.max
+
+		def between(self,start,end):
+			# todo: sanity check these values some more
+
+			if not end > start:
+				raise Exception('Invalid range, end is before start.')
+
+			self.start = start
+			self.end = end
+
+	class Selection:
+		def __init__(self,forRange):
+			self.range = forRange

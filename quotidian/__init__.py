@@ -3,7 +3,7 @@
 # Grab our module list
 import modules as parsers
 
-modules = parsers.initialize(modules.__file__)
+modules = parsers.initialize()
 
 from quotidian import Collection as _collection
 

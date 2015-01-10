@@ -1,10 +1,10 @@
 import os, importlib
 
-"""Takes in the path to where the modules are stored. This is so you can 
-install it anywhere."""
-def initialize(path):
+"""Dynamically loads all the modules. This is for various reasons, but mostly
+it will make adding new ones more mindless and imports them as objects."""
+def initialize():
 	# Get the modules directory
-	directory = '\\'.join(path.split('\\')[:-1])
+	directory = '\\'.join(__file__.split('\\')[:-1])
 
 	files = os.listdir(directory)
 
@@ -21,17 +21,52 @@ def initialize(path):
 		if not '.py' in file:
 			ok = False
 
+		# Hold up, some modules might be directories.
+		if os.path.isdir(directory + '\\' + file):
+			ok = True
+
 		if ok:
 			filtered.append(file)
 
 	files = filtered
-
 	# strip .py
-	files = [file[:-3] for file in files]
+
+	filtered = []
+	for file in files:
+		if '.py' in file:
+			filtered.append(file[:-3])
+		else:
+			filtered.append(file)
+	files = filtered
 	
 	modules = []
 	for file in files:
-		modules.append(importlib.import_module('quotidian.modules.' + file))
-		modules[-1].info['shortname'] = file
+		module = importlib.import_module('quotidian.modules.' + file)
+
+		if not hasattr(module, 'info'):
+			raise Exception('Module %s does not have info array.' % file)
+
+		module.info['shortname'] = file
+		modules.append(module)
+
+	# Check validity of each module
+	validModules = []
+	for module in modules:
+		info = module.info
+
+		requiredKeys = ['name','description']
+
+		for key in requiredKeys:
+			if not key in info:
+				raise Exception('Module %s does not have property %s in info array.' % (info['shortname'],key))
+
+		requiredFuncs = ['check','parse']
+		for func in requiredFuncs:
+			if not hasattr(module,func):
+				raise Exception('Module %s does not have required method %s.' % (info['shortname'],func))
+
+		validModules.append(module)
+
+	modules = validModules
 
 	return modules
