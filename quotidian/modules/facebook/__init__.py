@@ -109,4 +109,27 @@ def parse(path):
 				}
 				events.append((timestamp,prototype))
 
+	with open(htmlDir + 'wall.htm','r') as f:
+		bs = soup(f.read())
+		c = bs.find(attrs={'class': 'contents'}).find('div')
+		if c:
+			for item in c.children:
+				if item.find(attrs={'class': 'meta'}):
+					timestamp = item.find(attrs={'class': 'meta'}).string
+					timestamp = dateutil.parser.parse(timestamp)
+
+					event = item.contents[1]
+
+					comment = item.find(attrs={'class': 'comment'})
+					if comment:
+						comment = comment.string
+
+					"""I sort of ran out of steam here on working on this, 
+					because it's ultimately not that high priority and it's 
+					gonna be pretty tedious to come up with some regexes to get
+					data from all the different events. But it's doable, for 
+					whoever's interested in getting this kind of data. Messages 
+					were my priority for social graph kind of stuff, because
+					Facebook does not provide very much about the Wall events."""
+
 	return events
