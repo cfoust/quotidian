@@ -3,6 +3,13 @@
 import os, datetime, sys, traceback
 import drury
 
+guideTemplate = """Quotidian Module Guide
+======================
+
+To use one of these modules, create the folder specified by "Folder name:" in
+this folder and follow the module's instructions.
+"""
+
 class Collection:
 
 	def __init__(self, folder_name, modules):
@@ -18,9 +25,7 @@ class Collection:
 			print "%d installed modules." % len(modules)
 
 			# Add the header
-			template = '\\'.join(__file__.split('\\')[:-1]) + '\\guide-template.txt'
-			with open(template,'r') as t:
-				f.write(t.read())
+			f.write(guideTemplate)
 
 			f.write('\n\n')
 

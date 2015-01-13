@@ -3,3 +3,7 @@ data/**
 quotidian.sublime-workspace
 test.py
 **.dmp
+quotidian.egg-info/**
+dist/**
+build/**
+quot/**

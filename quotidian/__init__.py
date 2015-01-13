@@ -1,11 +1,14 @@
 #!/usr/bin/env python
 
 # Grab our module list
-import modules as parsers
+try:
+	import modules as parsers
+except ImportError:
+	import quotidian.modules as parsers
 
 modules = parsers.initialize()
 
-from quotidian import Collection as _collection
+from quotidian import Collection
 
 def load(foldername):
 	# Injects the modules into a new collection and returns it

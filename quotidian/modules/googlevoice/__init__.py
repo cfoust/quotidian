@@ -12,7 +12,6 @@ The folder structure should look like googlevoice/Takeout/Google Voice.""",
 	'dependencies': ['bs4','dateutil']
 }
 
-from db import *
 from peewee import *
 import os, datetime, traceback
 

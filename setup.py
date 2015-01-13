@@ -2,12 +2,15 @@
 
 try:
     from setuptools import setup
+    from setuptools import find_packages
 except ImportError:
     from distutils.core import setup
 
 import quotidian
 
-packages = ['quotidian']
+packages = ['quotidian', 'quotidian.modules']
+
+modules = ['quotidian.modules.' + p for p in find_packages('quotidian/modules')]
 
 setup(
     name='quotidian',
@@ -15,6 +18,11 @@ setup(
     description='A simple platform for unifying the data in your life.',
     author='Caleb Foust',
     author_email='cfoust@sqweebloid.com',
-    packages=packages,
-    install_requires=['peewee']
+    packages = packages + modules,
+    install_requires=['peewee'],
+    entry_points = {
+    	'console_scripts': [
+    		'quot = quotidian.cli:main'
+    	]
+    }
 )
