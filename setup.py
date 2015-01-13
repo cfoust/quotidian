@@ -8,7 +8,7 @@ except ImportError:
 
 import quotidian
 
-packages = ['quotidian', 'quotidian.modules']
+packages = ['quotidian', 'quotidian.modules', 'quotidian.cli']
 
 modules = ['quotidian.modules.' + p for p in find_packages('quotidian/modules')]
 

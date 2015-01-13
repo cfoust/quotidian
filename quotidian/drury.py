@@ -46,7 +46,7 @@ class Drury:
 		for item in data:
 			encode.append({'timestamp': item[0], 
 					     'module': moduleName,
-					     'data': json.dumps(item[1])})
+					     'data': json.dumps(item[1],encoding="utf-8")})
 
 		# Insert 'em
 		with self.db.transaction():
@@ -66,7 +66,7 @@ class Drury:
 									      DataPoint.timestamp >= start)
 		restoredData = []
 		for point in q:
-			restoredData.append((point.timestamp,json.loads(point.data)))
+			restoredData.append((point.timestamp,json.loads(point.data,'utf-8')))
 
 		return restoredData
 
@@ -78,7 +78,8 @@ class Drury:
 			return None
 
 	def hasData(self,moduleName):
-		result = self.retrieveData(datetime.datetime.min,datetime.datetime.max,moduleName)
-		if len(result) == 0:
+		try:
+			info = BakeInfo.get(BakeInfo.moduleName == moduleName)
+			return True
+		except DoesNotExist:
 			return False
-		return True

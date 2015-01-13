@@ -7,3 +7,4 @@ quotidian.egg-info/**
 dist/**
 build/**
 quot/**
+build.bat

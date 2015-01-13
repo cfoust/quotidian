@@ -17,12 +17,10 @@ class Collection:
 
 		# Create folder if it doesn't exist
 		if not os.path.isdir(folder_name):
-			print "Folder %s was not found, so it was created." % folder_name
 			os.makedirs(folder_name)
 
 		# Create (or update) guide to usable modules
 		with open(folder_name + 'modules-readme.txt','w') as f:
-			print "%d installed modules." % len(modules)
 
 			# Add the header
 			f.write(guideTemplate)

@@ -8,7 +8,7 @@ except ImportError:
 
 modules = parsers.initialize()
 
-from quotidian import Collection
+from quotidian import Collection as _collection
 
 def load(foldername):
 	# Injects the modules into a new collection and returns it
