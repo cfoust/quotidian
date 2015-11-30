@@ -44,9 +44,18 @@ class Drury:
 		# Set up the data to be inserted
 		encode = []
 		for item in data:
-			encode.append({'timestamp': item[0], 
-					     'module': moduleName,
-					     'data': json.dumps(item[1],encoding="utf-8")})
+			try:
+				encoded = json.dumps(item[1]).encode('utf-8')
+			except:
+				print "Failed to encode"
+				print [item[1]]
+				exit()
+			obj = {
+				'timestamp': item[0], 
+				'module': moduleName,
+				'data': encoded
+			}
+			encode.append(obj)
 
 		# Insert 'em
 		with self.db.transaction():

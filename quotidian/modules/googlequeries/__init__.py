@@ -1,45 +1,42 @@
 info = {
 	'name': 'Google Queries Importer',
-	'version': 1.0,
-	'description': """This can't really be used by the average user as of right
-now, because it relies on a special database of queries that is scraped by
-a different little script of mine. Normally, Google does not allow you to
-download your queries, and the manner of getting them is rather roundabout and
-not all that practical to distribute. Therefore, it's best just to leave this 
-be until I can find a good way of implementing this for everyone."""
+	'version': 1.2,
+	'description': """Google now provides you with all of the queries you have
+	ever made on their website at https://history.google.com/history/. Click the
+	three vertical dots in the upper right corner of the page (after you've 
+	logged in) and click \"Download Searches\". You will get a zip archive in
+	your email inbox. Copy the Searches folder (the nested one with all the files,
+	not the one with index.html in it) into this module's folder."""
 }
 
-from db import *
-from peewee import *
-import os, datetime
+import os, datetime, json
 
 def check(path):
-	dbfile = path + '/queries.db'
+	maindir = path + '/Searches/'
 
-	if not os.path.exists(dbfile):
+	if not os.path.exists(maindir):
 		return False
 
-	db = SqliteDatabase(dbfile)
-	db.connect()
-	dbConnection.initialize(db)
-
-	try:
-		Query.get()
-	except:
-		return False
+	for f in os.listdir(maindir):
+		if not f.endswith('.json'):
+			return False
 
 	return True
 
+
+
 def parse(path):
-	dbfile = path + '/queries.db'
-	db = SqliteDatabase(dbfile)
-	db.connect()
-	dbConnection.initialize(db)
+	maindir = path + '/Searches/'
 
 	queries = []
-	for query in Query.select():
-		timestamp = datetime.datetime.fromtimestamp(query.id)
-		prototype = {'query': query.query}
-		queries.append((timestamp,prototype))
+	for f in os.listdir(maindir):
+		with open(maindir + f,'r') as json_file:
+			obj = json.loads(json_file.read())
+
+			for item in obj['event']:
+				timestamp = float(item['query']['id'][0]['timestamp_usec']) / 1000000.0
+				timestamp = datetime.datetime.fromtimestamp(timestamp)
+
+				queries.append((timestamp,{'query': item['query']['query_text']}))
 
 	return queries

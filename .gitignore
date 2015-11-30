@@ -1,10 +1,12 @@
 data/**
-**.pyc
-quotidian.sublime-workspace
-test.py
-**.dmp
 quotidian.egg-info/**
 dist/**
 build/**
 quot/**
+
+**.dmp
+**.pyc
+
+quotidian.sublime-workspace
+test.py
 build.bat

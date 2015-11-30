@@ -48,7 +48,13 @@ def parse(path):
 		parts = file['name'].split(' - ')
 		contact = parts[0]
 
-		s = soup(file['contents'])
+		# To deal with the Windows file system encoding
+		try:
+			contact = contact.decode('latin-1')
+		except:
+			pass
+
+		s = soup(file['contents'],'html.parser')
 
 		messages = s.findAll(attrs={'class': 'message'})
 		for message in messages:
@@ -61,12 +67,15 @@ def parse(path):
 
 			messagetext = message.findAll('q')[0].text
 
+			
 			text = {
 				'type': 'text',
 				'contact': contact,
 				'incoming': contactname == contact,
 				'text': messagetext
 			}
+
+
 
 			info.append((timestamp,text))
 
