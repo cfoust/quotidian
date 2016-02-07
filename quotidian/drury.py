@@ -58,8 +58,18 @@ class Drury:
 			encode.append(obj)
 
 		# Insert 'em
+		size = 200
+		times = len(encode) / size
+		remaining = len(encode) % size != 0
+		
+		# Chunk
+		for i in range(times):
+			with self.db.transaction():
+				DataPoint.insert_many(encode[i*size:(i+1)*size]).execute()
+
+		# remaining
 		with self.db.transaction():
-			DataPoint.insert_many(encode).execute()
+			DataPoint.insert_many(encode[times*size:(times*size)+remaining]).execute()
 
 		now = datetime.datetime.now()
 		try:
